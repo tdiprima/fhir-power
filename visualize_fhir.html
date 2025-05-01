@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FHIR Data Structure Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        svg {
+            background: white;
+            border: 1px solid #ccc;
+        }
+        .node circle {
+            fill: #69b3a2;
+            stroke: #fff;
+            stroke-width: 2px;
+        }
+        .node text {
+            font-size: 14px;
+            fill: #333;
+        }
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // FHIR data structure
+        const fhirData = {
+            name: "FHIR",
+            children: [
+                {
+                    name: "Patient",
+                    children: [
+                        { name: "id: 12345" },
+                        { name: "name: John Doe" },
+                        { name: "birthDate: 1980-01-01" }
+                    ]
+                },
+                {
+                    name: "Encounter",
+                    children: [
+                        { name: "id: enc001" },
+                        { name: "patient: 12345" },
+                        { name: "date: 2023-10-01" }
+                    ]
+                },
+                {
+                    name: "Observation",
+                    children: [
+                        { name: "id: obs001" },
+                        { name: "encounter: enc001" },
+                        { name: "code: Blood Pressure" },
+                        { name: "value: 120/80 mmHg" }
+                    ]
+                },
+                {
+                    name: "Condition",
+                    children: [
+                        { name: "id: cond001" },
+                        { name: "patient: 12345" },
+                        { name: "code: Hypertension" },
+                        { name: "onset: 2023-09-15" }
+                    ]
+                },
+                {
+                    name: "MedicationRequest",
+                    children: [
+                        { name: "id: medreq001" },
+                        { name: "patient: 12345" },
+                        { name: "medication: Lisinopril" },
+                        { name: "status: active" }
+                    ]
+                },
+                {
+                    name: "Procedure",
+                    children: [
+                        { name: "id: proc001" },
+                        { name: "patient: 12345" },
+                        { name: "code: Appendectomy" },
+                        { name: "performed: 2023-08-20" }
+                    ]
+                }
+            ]
+        };
+
+        // Set up SVG canvas
+        const width = 800, height = 600;
+        const svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Create tree layout
+        const tree = d3.tree().size([height - 50, width - 300]);
+        const root = d3.hierarchy(fhirData);
+        tree(root);
+
+        // Draw links
+        svg.selectAll(".link")
+            .data(root.links())
+            .enter()
+            .append("path")
+            .attr("class", "link")
+            .attr("d", d3.linkHorizontal()
+                .x(d => d.y)
+                .y(d => d.x));
+
+        // Draw nodes
+        const nodes = svg.selectAll(".node")
+            .data(root.descendants())
+            .enter()
+            .append("g")
+            .attr("class", "node")
+            .attr("transform", d => `translate(${d.y},${d.x})`);
+
+        nodes.append("circle")
+            .attr("r", 5);
+
+        nodes.append("text")
+            .attr("dy", ".35em")
+            .attr("x", d => d.children ? -10 : 10)
+            .style("text-anchor", d => d.children ? "end" : "start")
+            .text(d => d.data.name);
+    </script>
+</body>
+</html>
