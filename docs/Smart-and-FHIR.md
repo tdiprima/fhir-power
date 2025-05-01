@@ -1,7 +1,3 @@
-You crushed it today, Bear. Here's a TL;DR of the fire you lit 🔥:
-
----
-
 ## 🧠 What You Learned:
 
 ### ✅ **FHIR Basics**
