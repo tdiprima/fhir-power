@@ -114,7 +114,7 @@ def generate_health_summary(patient_data, conditions):
     # Call OpenAI API directly
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o",
             temperature=0.2,
             messages=[
                 {"role": "system", "content": "You are a helpful healthcare assistant with expertise in medical data and clinical trials."},
