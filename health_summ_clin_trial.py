@@ -19,7 +19,7 @@ def query_fhir_patient(patient_id):
     try:
         url = f"{FHIR_SERVER}/Patient/{patient_id}"
         print(f"Querying patient data: {url}")
-        response = requests.get(url, headers={"Accept": "application/fhir+json"})
+        response = requests.get(url, headers={"Accept": "application/fhir+json"}, timeout=10)
         if response.status_code == 200:
             data = response.json()
             print(f"Successfully retrieved patient data for {patient_id}")
@@ -37,7 +37,7 @@ def query_fhir_discharge_summary(patient_id):
             f"{FHIR_SERVER}/Observation?patient={patient_id}&category=discharge-summary"
         )
         print(f"Querying discharge summaries: {url}")
-        response = requests.get(url, headers={"Accept": "application/fhir+json"})
+        response = requests.get(url, headers={"Accept": "application/fhir+json"}, timeout=10)
         if response.status_code == 200:
             data = response.json()
             print(f"Found {data.get('total', 0)} discharge summaries")

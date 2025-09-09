@@ -56,6 +56,7 @@ def callback():
             "client_id": CLIENT_ID,
         },
         headers={"Content-Type": "application/x-www-form-urlencoded"},
+        timeout=10
     )
 
     token_data = token_response.json()
@@ -68,13 +69,13 @@ def callback():
     headers = {"Authorization": f"Bearer {access_token}"}
 
     # Get patient
-    patient = requests.get(f"{FHIR_BASE}/Patient/{patient_id}", headers=headers).json()
+    patient = requests.get(f"{FHIR_BASE}/Patient/{patient_id}", headers=headers, timeout=10).json()
     name = patient.get("name", [{}])[0]
     full_name = f"{name.get('given', ['?'])[0]} {name.get('family', '?')}"
 
     # Get conditions
     conditions = (
-        requests.get(f"{FHIR_BASE}/Condition?patient={patient_id}", headers=headers)
+        requests.get(f"{FHIR_BASE}/Condition?patient={patient_id}", headers=headers, timeout=10)
         .json()
         .get("entry", [])
     )
@@ -86,8 +87,7 @@ def callback():
     # Get medications
     meds = (
         requests.get(
-            f"{FHIR_BASE}/MedicationRequest?patient={patient_id}", headers=headers
-        )
+            f"{FHIR_BASE}/MedicationRequest?patient={patient_id}", headers=headers, timeout=10)
         .json()
         .get("entry", [])
     )
@@ -100,7 +100,7 @@ def callback():
 
     # Get observations
     obs = (
-        requests.get(f"{FHIR_BASE}/Observation?patient={patient_id}", headers=headers)
+        requests.get(f"{FHIR_BASE}/Observation?patient={patient_id}", headers=headers, timeout=10)
         .json()
         .get("entry", [])
     )
@@ -147,4 +147,4 @@ def callback():
 
 
 if __name__ == "__main__":
-    app.run(port=8000, debug=True)
+    app.run(port=8000)
